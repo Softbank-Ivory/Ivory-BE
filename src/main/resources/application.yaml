@@ -1,3 +1,27 @@
 spring:
   application:
     name: ivory-be
+  cloud:
+    aws:
+      s3:
+        bucket: invocation
+      credentials:
+        access-key: 1234
+        secret-key: 1234
+      region:
+        static: ap-northeast-2
+
+  datasource:
+    url: 11
+    username: 11
+    password: 11
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
