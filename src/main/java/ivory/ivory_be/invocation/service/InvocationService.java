@@ -11,21 +11,24 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
-
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class InvocationService {
 
     private final S3Service s3Service;
     private final InvocationRepository invocationRepository;
     private final RestClient restClient;
 
-    private static final String RUNNER_URL = "http://";
+    @Value("${runner.url}")
+    private String RUNNER_URL;
 
     public InvocationResponseDto createInvocation(InvocationRequestDto req) {
 
@@ -99,12 +102,13 @@ public class InvocationService {
     public void sendInvocationToRunner(RunnerInvokeRequestDto req) {
         try {
             restClient.post()
-                    .uri(RUNNER_URL + "/test")
+                    .uri(RUNNER_URL + "/internal/invocations")
                     .body(req)
                     .retrieve()
                     .toBodilessEntity();
         } catch (Exception e) {
-            throw new RuntimeException("Runner 호출 실패", e);
+//            throw new RuntimeException("Runner 호출 실패", e);
+            log.warn("Runner 요청 실패: {}", e.getMessage());
         }
     }
 

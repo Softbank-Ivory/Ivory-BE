@@ -4,17 +4,17 @@ spring:
   cloud:
     aws:
       s3:
-        bucket: invocation
+        bucket:
       credentials:
-        access-key: 1234
-        secret-key: 1234
+        access-key:
+        secret-key:
       region:
         static: ap-northeast-2
 
   datasource:
-    url: 11
-    username: 11
-    password: 11
+    url:
+    username:
+    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -23,5 +23,11 @@ spring:
     show-sql: false
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
         dialect: org.hibernate.dialect.MySQLDialect
+
+runner:
+  url: http://
+
+ivory-fe:
+  url: http://
