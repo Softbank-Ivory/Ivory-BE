@@ -30,4 +30,4 @@ runner:
   url: http://
 
 ivory-fe:
-  url: http://
+  url: "https://d27ghwslc959bz.cloudfront.net"
