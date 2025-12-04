@@ -10,7 +10,7 @@ import java.util.List;
 @RestController
 public class RuntimeController {
 
-    @GetMapping("/runtimes")
+    @GetMapping("/api/runtimes")
     public List<RuntimeResponseDto> getRuntimes() {
         return Arrays.asList(
                 new RuntimeResponseDto("python", "Python 3.10"),
