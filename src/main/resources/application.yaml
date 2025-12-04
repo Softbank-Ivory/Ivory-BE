@@ -1,33 +1,9 @@
 spring:
   application:
     name: ivory-be
-  cloud:
-    aws:
-      s3:
-        bucket:
-      credentials:
-        access-key:
-        secret-key:
-      region:
-        static: ap-northeast-2
 
-  datasource:
-    url:
-    username:
-    password:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
 
   jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: false
-    properties:
-      hibernate:
-        format_sql: false
-        dialect: org.hibernate.dialect.MySQLDialect
-
-runner:
-  url: http://
-
-ivory-fe:
-  url: http://
+    open-in-view: false
