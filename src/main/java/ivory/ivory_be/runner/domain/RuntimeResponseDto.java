@@ -9,5 +9,5 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class RuntimeResponseDto {
     private String name;
-    private String version;
+    private String runtime;
 }
