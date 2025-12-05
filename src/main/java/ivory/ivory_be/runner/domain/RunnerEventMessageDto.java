@@ -24,7 +24,7 @@ public class RunnerEventMessageDto {
 
         private String line;
 
-        private Integer durationMs;
+        private Long durationMs;
 
         private Result result;
 
