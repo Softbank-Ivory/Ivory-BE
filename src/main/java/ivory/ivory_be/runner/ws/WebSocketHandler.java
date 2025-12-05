@@ -38,6 +38,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
         try {
             String raw = message.getPayload();
             RunnerEventMessageDto msg = new ObjectMapper().readValue(raw, RunnerEventMessageDto.class);
+
+            log.info("[Runner WS] Received message DTO: {}", new ObjectMapper().writeValueAsString(msg));
+
             eventService.handle(msg);
         } catch (Exception e) {
             log.error("WebSocket message processing error: {}. Payload: {}", e.getMessage(), message.getPayload(), e);
