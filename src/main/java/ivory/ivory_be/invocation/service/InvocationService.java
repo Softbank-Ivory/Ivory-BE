@@ -33,8 +33,11 @@ public class InvocationService {
         // 확장자 생성
         String ext = resolveFileExtension(req.getRuntime());
 
+        String[] parts = req.getHandler().split("\\.");
+        String fileName = parts[0] + ext;
+
         // S3 저장
-        String key = "invocations/" + invocationId + "/code." + ext;
+        String key = "invocations/" + invocationId + fileName + ext;
         s3Service.uploadCode(key, req.getCode());
 
         // DB 저장
@@ -77,15 +80,15 @@ public class InvocationService {
 
     public String resolveFileExtension(String runtime) {
         if (runtime.startsWith("python")) {
-            return "py";
+            return ".py";
         }
         if (runtime.startsWith("node")) {
-            return "js";
+            return ".js";
         }
         if (runtime.startsWith("java")) {
-            return "java";
+            return ".java";
         }
-        return "txt";
+        return ".txt";
     }
 
     private String toJson(Object obj) {
