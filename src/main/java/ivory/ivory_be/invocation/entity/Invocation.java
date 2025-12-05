@@ -32,6 +32,8 @@ public class Invocation {
 
     private String handler;
 
+    private String s3Key;
+
     @Column(columnDefinition = "json")
     private String payload;
 

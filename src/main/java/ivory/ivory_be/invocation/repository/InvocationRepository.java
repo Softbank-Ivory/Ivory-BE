@@ -2,6 +2,7 @@ package ivory.ivory_be.invocation.repository;
 
 import ivory.ivory_be.invocation.entity.Invocation;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,6 @@ public interface InvocationRepository extends JpaRepository<Invocation, Long> {
             @Param("status") String status,
             @Param("updatedAt") LocalDateTime updatedAt
     );
+
+    Optional<Invocation> findByInvocationId(String invocationId);
 }

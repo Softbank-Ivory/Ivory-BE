@@ -1,5 +1,8 @@
 package ivory.ivory_be.invocation.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ivory.ivory_be.invocation.domain.RunnerInvokeRequestDto;
+import ivory.ivory_be.invocation.entity.Invocation;
 import ivory.ivory_be.invocation.repository.InvocationRepository;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -9,8 +12,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Slf4j
@@ -18,6 +23,11 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequiredArgsConstructor
 @Transactional
 public class InvocationStreamService {
+
+    @Value("${runner.url}")
+    private String RUNNER_URL;
+
+    private final RestClient restClient;
 
     private final Map<String, List<SseEmitter>> emitterMap = new ConcurrentHashMap<>();
 
@@ -38,7 +48,55 @@ public class InvocationStreamService {
             removeEmitter(invocationId, emitter);
         });
 
+        startRunnerIfNeeded(invocationId);
+
         return emitter;
+    }
+
+
+    public void startRunnerIfNeeded(String invocationId) {
+        Invocation inv = invocationRepository
+                .findByInvocationId(invocationId)
+                .orElseThrow(() -> new IllegalArgumentException("invocation not found"));
+
+        // 이미 실행 중이거나 끝난 애면 다시 실행 X (재연결 / 여러 탭 보호)
+        if (!"REQUEST_RECEIVED".equals(inv.getStatus())) {
+            log.info("[Runner] already started. invocationId={}, status={}", invocationId, inv.getStatus());
+            return;
+        }
+
+        // 여기서 Runner 호출에 필요한 데이터는 DB에서 꺼내옴
+        RunnerInvokeRequestDto runnerReq = RunnerInvokeRequestDto.builder()
+                .invocationId(inv.getInvocationId())
+                .codeKey(inv.getS3Key())
+                .runtime(inv.getRuntime())
+                .handler(inv.getHandler())
+                .payload(fromJson(inv.getPayload(), Map.class))
+                .build();
+
+        // Runner 호출
+        sendInvocationToRunner(runnerReq);
+    }
+
+    private <T> T fromJson(String json, Class<T> clazz) {
+        try {
+            return new ObjectMapper().readValue(json, clazz);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void sendInvocationToRunner(RunnerInvokeRequestDto req) {
+        try {
+            restClient.post()
+                    .uri(RUNNER_URL + "/internal/invocations")
+                    .body(req)
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (Exception e) {
+//            throw new RuntimeException("Runner 호출 실패", e);
+            log.warn("Runner 요청 실패: {}", e.getMessage());
+        }
     }
 
     private void removeEmitter(String invocationId, SseEmitter emitter) {

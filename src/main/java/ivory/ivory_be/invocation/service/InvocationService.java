@@ -3,7 +3,6 @@ package ivory.ivory_be.invocation.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ivory.ivory_be.invocation.domain.InvocationRequestDto;
 import ivory.ivory_be.invocation.domain.InvocationResponseDto;
-import ivory.ivory_be.invocation.domain.RunnerInvokeRequestDto;
 import ivory.ivory_be.invocation.entity.Invocation;
 import ivory.ivory_be.invocation.repository.InvocationRepository;
 import java.time.LocalDate;
@@ -12,10 +11,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestClient;
 
 @Service
 @RequiredArgsConstructor
@@ -25,10 +22,9 @@ public class InvocationService {
 
     private final S3Service s3Service;
     private final InvocationRepository invocationRepository;
-    private final RestClient restClient;
 
-    @Value("${runner.url}")
-    private String RUNNER_URL;
+//    @Value("${runner.url}")
+//    private String RUNNER_URL;
 
     public InvocationResponseDto createInvocation(InvocationRequestDto req) {
 
@@ -44,6 +40,7 @@ public class InvocationService {
         // DB 저장
         Invocation invocation = Invocation.builder()
                 .invocationId(invocationId)
+                .s3Key(key)
                 .runtime(req.getRuntime())
                 .handler(req.getHandler())
                 .payload(toJson(req.getPayload()))
@@ -54,16 +51,16 @@ public class InvocationService {
 
         invocationRepository.save(invocation);
 
-        // Runner 요청 - restClient
-        RunnerInvokeRequestDto runnerInvokeRequestDto = RunnerInvokeRequestDto.builder()
-                .invocationId(invocationId)
-                .codeKey(key)
-                .runtime(req.getRuntime())
-                .handler(req.getHandler())
-                .payload(req.getPayload())
-                .build();
-
-        sendInvocationToRunner(runnerInvokeRequestDto);
+//        // Runner 요청 - restClient
+//        RunnerInvokeRequestDto runnerInvokeRequestDto = RunnerInvokeRequestDto.builder()
+//                .invocationId(invocationId)
+//                .codeKey(key)
+//                .runtime(req.getRuntime())
+//                .handler(req.getHandler())
+//                .payload(req.getPayload())
+//                .build();
+//
+//        sendInvocationToRunner(runnerInvokeRequestDto);
 
         // 응답 반환
         return InvocationResponseDto.builder()
@@ -99,17 +96,17 @@ public class InvocationService {
         }
     }
 
-    public void sendInvocationToRunner(RunnerInvokeRequestDto req) {
-        try {
-            restClient.post()
-                    .uri(RUNNER_URL + "/internal/invocations")
-                    .body(req)
-                    .retrieve()
-                    .toBodilessEntity();
-        } catch (Exception e) {
-//            throw new RuntimeException("Runner 호출 실패", e);
-            log.warn("Runner 요청 실패: {}", e.getMessage());
-        }
-    }
+//    public void sendInvocationToRunner(RunnerInvokeRequestDto req) {
+//        try {
+//            restClient.post()
+//                    .uri(RUNNER_URL + "/internal/invocations")
+//                    .body(req)
+//                    .retrieve()
+//                    .toBodilessEntity();
+//        } catch (Exception e) {
+////            throw new RuntimeException("Runner 호출 실패", e);
+//            log.warn("Runner 요청 실패: {}", e.getMessage());
+//        }
+//    }
 
 }
