@@ -37,7 +37,7 @@ public class InvocationService {
         String fileName = parts[0] + ext;
 
         // S3 저장
-        String key = "invocations/" + invocationId + fileName + ext;
+        String key = "invocations/" + invocationId + "/" + fileName;
         s3Service.uploadCode(key, req.getCode());
 
         // DB 저장
