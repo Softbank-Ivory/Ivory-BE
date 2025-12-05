@@ -76,7 +76,7 @@ public class InvocationStreamService {
     public void sendStatus(String invocationId, String status) {
         // DB 업데이트
         invocationRepository.updateStatusByInvocationId(invocationId, status, LocalDateTime.now());
-
+        log.info("status!!: {}",status);
         Map<String, Object> payload = Map.of("status", status);
         sendEvent(invocationId, "STATUS", payload);
     }
