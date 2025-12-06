@@ -28,6 +28,8 @@ spring:
 
 runner:
   url: "http://54.180.241.187:8080"
+  instance-id: ${RUNNER_INSTANCE_ID}
+  region: ap-northeast-2
 
 ivory-fe:
   url: "https://d27ghwslc959bz.cloudfront.net"
