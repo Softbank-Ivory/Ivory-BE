@@ -13,9 +13,9 @@ public class RuntimeController {
     @GetMapping("/api/runtimes")
     public List<RuntimeResponseDto> getRuntimes() {
         return Arrays.asList(
-                new RuntimeResponseDto("python", "Python 3.10"),
-                new RuntimeResponseDto("nodejs", "Node.js 18.x"),
-                new RuntimeResponseDto("java", "Java 11")
+                new RuntimeResponseDto("python", "Python 3.9.24"),
+                new RuntimeResponseDto("nodejs", "Node.js 24.x"),
+                new RuntimeResponseDto("java", "Java 21")
         );
     }
 }
