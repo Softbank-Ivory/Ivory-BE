@@ -13,8 +13,8 @@ public class RuntimeController {
     @GetMapping("/api/runtimes")
     public List<RuntimeResponseDto> getRuntimes() {
         return Arrays.asList(
-                new RuntimeResponseDto("python", "Python 3.9.24"),
-                new RuntimeResponseDto("nodejs", "Node.js 24.x"),
+                new RuntimeResponseDto("python", "Python 3.9"),
+                new RuntimeResponseDto("nodejs", "Node.js 24"),
                 new RuntimeResponseDto("java", "Java 21")
         );
     }
