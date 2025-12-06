@@ -38,7 +38,7 @@ public class RunnerMetricsService {
     }
 
     private Double fetchCpuUtilization() {
-        Instant end = Instant.now();
+        Instant end = Instant.now().minusSeconds(60);
         Instant start = end.minus(LOOKBACK_MINUTES, ChronoUnit.MINUTES);
 
         GetMetricStatisticsRequest req = GetMetricStatisticsRequest.builder()
