@@ -21,18 +21,21 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private final RunnerEventService eventService;
 
+    // 웹소켓 연결 시
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         sessions.put(session.getId(), session);
         log.info("WebSocket connected: sessionId={}", session.getId());
     }
 
+    // 웹소켓 연결 해제 시
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         sessions.remove(session.getId());
         log.info("WebSocket disconnected: sessionId={}", session.getId());
     }
 
+    // 웹소켓 메시지 수신 시
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         try {
