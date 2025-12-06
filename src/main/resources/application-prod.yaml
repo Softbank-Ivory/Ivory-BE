@@ -27,7 +27,7 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 
 runner:
-  url: "http://3.35.138.60:8080"
+  url: "http://54.180.241.187:8080"
 
 ivory-fe:
   url: "https://d27ghwslc959bz.cloudfront.net"
